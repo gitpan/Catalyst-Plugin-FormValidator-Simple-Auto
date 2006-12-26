@@ -7,7 +7,7 @@ use Catalyst::Exception;
 use UNIVERSAL::isa;
 use YAML;
 
-our $VERSION = '0.09';
+our $VERSION = '0.10';
 
 __PACKAGE__->mk_accessors(qw/validator_profile/);
 
@@ -87,7 +87,7 @@ Above two configs is equals to:
     action1:
       param1:
         - rule: NOT_BLANK
-        - message: param1 is required!
+          message: param1 is required!
 
 
 =head1 EXTENDED METHODS
@@ -125,11 +125,9 @@ sub setup {
             my $rules = $profile->{$param} || [];
 
             for my $rule (@$rules) {
-
-                if ( ref $rule eq 'HASH'
-                    and defined $rule->{rule} && defined $rule->{message} )
-                {
-                    $messages->{$action}{$param}{ $rule->{rule} } = $rule->{message};
+                if ( ref $rule eq 'HASH' and defined $rule->{rule} ) {
+                    $messages->{$action}{$param} ||= {};
+                    $messages->{$action}{$param}{ $rule->{rule} } = $rule->{message} if defined $rule->{message};
                     $rule = $rule->{rule};
                 }
             }
