@@ -13,6 +13,7 @@ no_index:
 requires: 
   Catalyst: 5.30
   Catalyst::Plugin::FormValidator::Simple: 0
+  FormValidator::Simple: 0.20
   UNIVERSAL::isa: 0
   YAML: 0
-version: 0.11
+version: 0.12
