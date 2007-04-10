@@ -8,7 +8,7 @@ use UNIVERSAL::isa;
 use YAML;
 use FormValidator::Simple;
 
-our $VERSION = '0.14';
+our $VERSION = '0.15';
 
 __PACKAGE__->mk_accessors(qw/validator_profile/);
 
@@ -147,6 +147,7 @@ sub setup {
         for my $param ( keys %$profile ) {
             my $rules = $profile->{$param} || [];
 
+            my $i = 0;
             for my $rule (@$rules) {
                 if ( ref $rule eq 'HASH' and defined $rule->{rule} ) {
                     my $rule_name = ref $rule->{rule} eq 'ARRAY' ? $rule->{rule}[0] : $rule->{rule};
@@ -154,6 +155,12 @@ sub setup {
                     $messages->{$action}{$param}{ $rule_name } = $rule->{message} if defined $rule->{message};
                     $rule = $rule->{rule};
                 }
+                elsif (ref $rule eq 'HASH' and defined $rule->{self_rule} ) {
+                    $messages->{$action}{$param} ||= {};
+                    $messages->{$action}{$param}{ $rule->{self_rule} } = $rule->{message} if defined $rule->{message};
+                    delete $rules->[$i];
+                }
+                $i++;
             }
         }
     }
